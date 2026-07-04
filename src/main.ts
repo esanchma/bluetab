@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { mkdir, realpath, unlink, writeFile } from "node:fs/promises";
 import { createServer, createConnection } from "node:net";
 import { parseTabId, socketPath, type Request, type Response } from "./protocol";
@@ -49,7 +50,7 @@ async function installNativeHost(args: string[]) {
   const home = process.env.HOME;
   if (!home) throw new Error("HOME is not set");
 
-  const binaryPath = await realpath(process.execPath);
+  const binaryPath = await realpath(currentExecutablePath());
   const manifest = {
     name: "io.github.bluetab",
     description: "Bluetab native messaging host",
@@ -73,6 +74,13 @@ async function installNativeHost(args: string[]) {
     await writeFile(path, JSON.stringify(manifest, null, 2) + "\n");
     console.log(path);
   }
+}
+
+function currentExecutablePath(): string {
+  if (process.env.BLUETAB_HOST_PATH) return process.env.BLUETAB_HOST_PATH;
+  const execName = process.execPath.split("/").pop();
+  if (execName === "bun" || execName === "node") return process.argv[1] ?? process.execPath;
+  return process.execPath;
 }
 
 function normalizeExtensionId(value: string | undefined): string | undefined {
@@ -183,7 +191,7 @@ function readNativeFrames(chunk: Buffer) {
 // Keep this helper imported by compiled binaries/tests; it documents the ID format used by the extension too.
 void parseTabId;
 
-const args = Bun.argv.slice(2);
+const args = process.argv.slice(2);
 const launchedByBrowser = args[0]?.startsWith("chrome-extension://") || args[0]?.startsWith("chrome://");
 if (args.length === 0 || launchedByBrowser) await nativeMain();
 else await cliMain(args);
