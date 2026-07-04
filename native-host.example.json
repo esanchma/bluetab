@@ -1,0 +1,9 @@
+{
+  "name": "io.github.bluetab",
+  "description": "Bluetab native messaging host",
+  "path": "/absolute/path/to/dist/bt",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://REPLACE_WITH_EXTENSION_ID/"
+  ]
+}

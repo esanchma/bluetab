@@ -1,0 +1,14 @@
+{
+  "name": "bluetab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "bun build ./src/main.ts --compile --outfile ./dist/bt"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
+}
