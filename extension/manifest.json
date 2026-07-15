@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Bluetab",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Minimal MV3 tab CLI bridge compatible with a small brotab subset.",
   "permissions": ["tabs", "nativeMessaging"],
   "icons": {
