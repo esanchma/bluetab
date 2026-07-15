@@ -4,7 +4,7 @@
   "description": "Minimal MV3 brotab-like tab CLI for Chromium browsers.",
   "type": "module",
   "bin": {
-    "bt": "./cli/bt.js"
+    "bt": "cli/bt.js"
   },
   "files": [
     "cli/",
