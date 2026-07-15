@@ -4,6 +4,12 @@
   "version": "0.1.0",
   "description": "Minimal MV3 tab CLI bridge compatible with a small brotab subset.",
   "permissions": ["tabs", "nativeMessaging"],
+  "icons": {
+    "16": "icon.svg",
+    "32": "icon.svg",
+    "48": "icon.svg",
+    "128": "icon.svg"
+  },
   "background": {
     "service_worker": "service_worker.js"
   }

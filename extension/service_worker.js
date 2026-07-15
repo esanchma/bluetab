@@ -1,21 +1,38 @@
 const NATIVE_HOST = "io.github.bluetab";
 const CLIENT = "a";
 let port;
+let reconnectTimer;
 
-function connect() {
+function ensureNativeConnection() {
+  if (port) return;
   try {
     port = chrome.runtime.connectNative(NATIVE_HOST);
     port.onMessage.addListener(onNativeMessage);
     port.onDisconnect.addListener(() => {
       port = undefined;
-      setTimeout(connect, 1000);
+      clearTimeout(reconnectTimer);
+      reconnectTimer = setTimeout(ensureNativeConnection, 1000);
     });
   } catch (error) {
     console.error("bluetab native connect failed", error);
   }
 }
 
-connect();
+function wakeForBluetab() {
+  ensureNativeConnection();
+}
+
+chrome.runtime.onInstalled.addListener(wakeForBluetab);
+chrome.runtime.onStartup.addListener(wakeForBluetab);
+chrome.tabs.onCreated.addListener(wakeForBluetab);
+chrome.tabs.onRemoved.addListener(wakeForBluetab);
+chrome.tabs.onUpdated.addListener(wakeForBluetab);
+chrome.tabs.onActivated.addListener(wakeForBluetab);
+chrome.windows.onCreated.addListener(wakeForBluetab);
+chrome.windows.onRemoved.addListener(wakeForBluetab);
+chrome.windows.onFocusChanged.addListener(wakeForBluetab);
+
+ensureNativeConnection();
 
 async function onNativeMessage(message) {
   if (message.type !== "request") return;

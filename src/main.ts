@@ -8,8 +8,53 @@ const nativePending = new Map<number, (response: Response) => void>();
 let nativeBuffer = Buffer.alloc(0);
 let nextId = 1;
 
+function printHelp() {
+  console.log(`Bluetab - minimal brotab-like CLI for Chromium tabs.
+
+Usage:
+  bt <command> [args...]
+  bt --help
+
+Commands:
+  clients
+      List connected browser clients.
+
+  windows
+      List browser windows.
+
+  list
+      List tabs as: <tab-id>\\t<title>\\t<url>.
+
+  active
+      List active tabs.
+
+  query [filters...]
+      List tabs matching filters.
+      Supported filters: +active -active +pinned -pinned +muted -muted -title GLOB -url GLOB
+
+  activate [tab-id]
+      Activate a tab. If tab-id is omitted, reads the first field from stdin.
+
+  close <tab-id> [...]
+      Close one or more tabs.
+
+  open [client-or-window-id]
+      Open URLs read from stdin. Use a.0 to open a new window.
+
+  install <extension-id|chrome-extension://extension-id/>
+      Install the native messaging host manifest in supported browser config directories.
+
+Examples:
+  bt list
+  bt query -title '*GitHub*'
+  bt list | rg GitHub | bt activate
+  printf '%s\\n' https://example.com | bt open a
+`);
+}
+
 function usage(): never {
   console.error("usage: bt <clients|windows|list|active|query|activate|close|open|install> [args...]");
+  console.error("try: bt --help");
   process.exit(2);
 }
 
@@ -22,6 +67,10 @@ async function readStdinText(): Promise<string> {
 
 async function cliMain(args: string[]) {
   const command = args[0] ?? usage();
+  if (command === "--help" || command === "-h" || command === "help") {
+    printHelp();
+    return;
+  }
   const stdin = await readStdinText();
   const request: Request = { id: nextId++, command, args: args.slice(1), stdin };
   try {

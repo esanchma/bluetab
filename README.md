@@ -24,6 +24,7 @@ bt install <extension-id>
 
 ## Supported surface
 
+- `bt --help`
 - `bt install <extension-id|chrome-extension://extension-id/>`
 - `bt clients`
 - `bt windows`

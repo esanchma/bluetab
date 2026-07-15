@@ -1,6 +1,6 @@
 {
   "name": "@esanchma/bluetab",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Minimal MV3 brotab-like tab CLI for Chromium browsers.",
   "type": "module",
   "bin": {
@@ -9,6 +9,7 @@
   "files": [
     "cli/",
     "src/",
+    "scripts/",
     "extension/",
     "native-host.example.json",
     "README.md"
@@ -16,6 +17,7 @@
   "scripts": {
     "check": "tsc --noEmit",
     "build": "bun build ./src/main.ts --compile --outfile ./dist/bt",
+    "pack:extension": "node ./scripts/pack-extension.js",
     "prepack": "bun run check"
   },
   "keywords": [

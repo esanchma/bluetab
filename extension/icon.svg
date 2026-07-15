@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Bluetab icon">
+  <defs>
+    <linearGradient id="tabBlue" x1="20" y1="18" x2="108" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5ED7FF"/>
+      <stop offset="0.48" stop-color="#168BFF"/>
+      <stop offset="1" stop-color="#075BD8"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="35" y1="25" x2="75" y2="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.7"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#003B8E" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="128" height="128" rx="28" fill="#EAF6FF"/>
+
+  <path
+    filter="url(#shadow)"
+    d="M21 41
+       C21 34.4 26.4 29 33 29
+       H56
+       C61.4 29 66.2 32.2 68.3 37.2
+       L71.1 44
+       C73.2 49 78 52 83.4 52
+       H103
+       C109.6 52 115 57.4 115 64
+       V91
+       C115 97.6 109.6 103 103 103
+       H25
+       C18.4 103 13 97.6 13 91
+       V53
+       C13 46.4 18.4 41 25 41
+       H21Z"
+    fill="#0A4FB8"
+    opacity="0.22"/>
+
+  <path
+    d="M18 38
+       C18 31.4 23.4 26 30 26
+       H55
+       C60.5 26 65.4 29.4 67.3 34.6
+       L70.2 42.4
+       C72.1 47.6 77 51 82.5 51
+       H101
+       C107.6 51 113 56.4 113 63
+       V89
+       C113 95.6 107.6 101 101 101
+       H27
+       C20.4 101 15 95.6 15 89
+       V50
+       C15 43.4 20.4 38 27 38
+       H18Z"
+    fill="url(#tabBlue)"/>
+
+  <path
+    d="M30 32
+       H54
+       C57.1 32 60 34 61.1 37
+       L64 44.7
+       C67 52.6 74.4 58 82.8 58
+       H101
+       C103.8 58 106 60.2 106 63
+       V68
+       H22
+       V50
+       C22 47.2 24.2 45 27 45
+       H30
+       V32Z"
+    fill="url(#shine)"/>
+
+  <path
+    d="M22 68 H106"
+    stroke="#BFEAFF"
+    stroke-opacity="0.65"
+    stroke-width="4"
+    stroke-linecap="round"/>
+
+  <circle cx="34" cy="55" r="4" fill="#D8F5FF" opacity="0.95"/>
+  <circle cx="48" cy="55" r="4" fill="#D8F5FF" opacity="0.8"/>
+  <circle cx="62" cy="55" r="4" fill="#D8F5FF" opacity="0.65"/>
+</svg>
