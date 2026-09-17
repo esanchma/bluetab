@@ -1,1 +1,1 @@
-export const BLUETAB_VERSION = "0.1.4";
+export const BLUETAB_VERSION = "0.1.6";

@@ -98,7 +98,7 @@ async function cliMain(args: string[]) {
     const response = await sendToDaemon(request);
     if (response.stdout) process.stdout.write(response.stdout);
     if (response.stderr) process.stderr.write(response.stderr);
-    process.exit(response.code ?? (response.ok ? 0 : 1));
+    process.exitCode = response.code ?? (response.ok ? 0 : 1);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error(message);
@@ -163,7 +163,7 @@ function sendToDaemon(request: Request): Promise<Response> {
     let data = "";
     let done = false;
     const finish = () => {
-      if (done) return;
+      if (done || !data.includes("\n")) return;
       const line = data.split("\n")[0];
       if (!line) return;
       done = true;
