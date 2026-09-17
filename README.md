@@ -25,6 +25,7 @@ bt install <extension-id>
 ## Supported surface
 
 - `bt --help`
+- `bt --version`
 - `bt install <extension-id|chrome-extension://extension-id/>`
 - `bt clients`
 - `bt windows`
@@ -34,7 +35,10 @@ bt install <extension-id>
 - `bt activate a.<windowId>.<tabId>`
 - `bt activate` reading a tab id from stdin, compatible with pipelines such as `bt list | ... | bt activate`
 - `bt close a.<windowId>.<tabId> [...]`
+- `bt open [-b|--background] [a[.<windowId>|.0]] [URL ...]`
 - `printf '%s\n' https://example.com | bt open a[.<windowId>|.0]`
+- `bt open https://example.com`
+- `bt open a.123 https://example.com`
 
 Unsupported by design: `text`, `html`, `words`, `index`, `search`, and other brotab commands outside the MVP.
 

@@ -135,19 +135,61 @@ async function closeTabs(request) {
 }
 
 async function openTabs(request) {
-  const target = request.args[0] ?? CLIENT;
+  const { background, target, urls } = parseOpenArgs(request.args, request.stdin);
   const id = parseBluetabId(target);
-  const urls = (request.stdin ?? "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  if (!urls.length) throw new Error("open needs URLs on stdin");
   if (id.windowId === 0) {
-    await chrome.windows.create({ url: urls });
+    await chrome.windows.create({ url: urls, focused: !background });
   } else {
     for (const url of urls) {
-      const createProperties = id.windowId === undefined ? { url } : { url, windowId: id.windowId };
+      const createProperties = id.windowId === undefined
+        ? { url, active: !background }
+        : { url, windowId: id.windowId, active: !background };
       await chrome.tabs.create(createProperties);
     }
   }
   return { id: request.id, ok: true, code: 0 };
+}
+
+function parseOpenArgs(args, stdin) {
+  let background = false;
+  const positionals = [];
+  for (const arg of args) {
+    if (arg === "-b" || arg === "--background") background = true;
+    else if (arg.startsWith("-")) throw new Error(`unsupported open argument: ${arg}`);
+    else positionals.push(arg);
+  }
+
+  const stdinUrls = splitUrls(stdin);
+  if (stdinUrls.length) {
+    if (!positionals.length) return { background, target: CLIENT, urls: stdinUrls };
+    if (!isBluetabTarget(positionals[0])) throw new Error(`unsupported open argument: ${positionals[0]}`);
+    if (positionals.length > 1) throw new Error("open accepts at most one target when URLs come from stdin");
+    return { background, target: positionals[0], urls: stdinUrls };
+  }
+
+  if (!positionals.length) throw new Error("open needs a URL on stdin or argv");
+  if (positionals.length === 1) {
+    if (isLikelyUrl(positionals[0])) return { background, target: CLIENT, urls: positionals };
+    if (isBluetabTarget(positionals[0])) throw new Error("open needs a URL on stdin or argv");
+  }
+
+  if (isBluetabTarget(positionals[0])) {
+    return { background, target: positionals[0], urls: positionals.slice(1) };
+  }
+
+  return { background, target: CLIENT, urls: positionals };
+}
+
+function splitUrls(stdin) {
+  return String(stdin ?? "").split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+}
+
+function isLikelyUrl(value) {
+  return /^[a-z][a-z0-9+.-]*:/i.test(String(value ?? ""));
+}
+
+function isBluetabTarget(value) {
+  return /^[a-z]+(?:\.\d+)?$/i.test(String(value ?? ""));
 }
 
 function parseBluetabId(value) {

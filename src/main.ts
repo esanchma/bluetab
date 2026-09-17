@@ -2,6 +2,7 @@
 import { mkdir, realpath, unlink, writeFile } from "node:fs/promises";
 import { createServer, createConnection } from "node:net";
 import { parseTabId, socketPath, type Request, type Response } from "./protocol";
+import { BLUETAB_VERSION } from "./version";
 
 const CLIENT = "a";
 const nativePending = new Map<number, (response: Response) => void>();
@@ -9,11 +10,12 @@ let nativeBuffer = Buffer.alloc(0);
 let nextId = 1;
 
 function printHelp() {
-  console.log(`Bluetab - minimal brotab-like CLI for Chromium tabs.
+  console.log(`Bluetab v${BLUETAB_VERSION} - minimal brotab-like CLI for Chromium tabs.
 
 Usage:
   bt <command> [args...]
   bt --help
+  bt --version
 
 Commands:
   clients
@@ -38,8 +40,9 @@ Commands:
   close <tab-id> [...]
       Close one or more tabs.
 
-  open [client-or-window-id]
-      Open URLs read from stdin. Use a.0 to open a new window.
+  open [-b|--background] [client-or-window-id] [url...]
+      Open URLs from stdin or argv. Use a.0 to open a new window.
+      With -b/--background, keep the current tab/window focused.
 
   install <extension-id|chrome-extension://extension-id/>
       Install the native messaging host manifest in supported browser config directories.
@@ -49,11 +52,13 @@ Examples:
   bt query -title '*GitHub*'
   bt list | rg GitHub | bt activate
   printf '%s\\n' https://example.com | bt open a
+  bt open https://example.com
+  bt open -b a.0 https://example.com
 `);
 }
 
 function usage(): never {
-  console.error("usage: bt <clients|windows|list|active|query|activate|close|open|install> [args...]");
+  console.error("usage: bt <clients|windows|list|active|query|activate|close|open|install|version> [args...]");
   console.error("try: bt --help");
   process.exit(2);
 }
@@ -69,6 +74,10 @@ async function cliMain(args: string[]) {
   const command = args[0] ?? usage();
   if (command === "--help" || command === "-h" || command === "help") {
     printHelp();
+    return;
+  }
+  if (command === "--version" || command === "-v" || command === "version") {
+    console.log(BLUETAB_VERSION);
     return;
   }
   const stdin = await readStdinText();
