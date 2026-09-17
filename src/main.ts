@@ -44,6 +44,12 @@ Commands:
       Open URLs from stdin or argv. Use a.0 to open a new window.
       With -b/--background, keep the current tab/window focused.
 
+  bookmark create <url> <title>
+      Create a bookmark in the default folder.
+
+  bookmark list
+      List bookmarks as: <bookmark-id>\t<title>\t<url>\t<folder-path>.
+
   install <extension-id|chrome-extension://extension-id/>
       Install the native messaging host manifest in supported browser config directories.
 
@@ -54,11 +60,13 @@ Examples:
   printf '%s\\n' https://example.com | bt open a
   bt open https://example.com
   bt open -b a.0 https://example.com
+  bt bookmark create https://example.com 'Example site'
+  bt bookmark list
 `);
 }
 
 function usage(): never {
-  console.error("usage: bt <clients|windows|list|active|query|activate|close|open|install|version> [args...]");
+  console.error("usage: bt <clients|windows|list|active|query|activate|close|open|bookmark|install|version> [args...]");
   console.error("try: bt --help");
   process.exit(2);
 }

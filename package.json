@@ -1,25 +1,29 @@
 {
   "name": "@esanchma/bluetab",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Minimal MV3 brotab-like tab CLI for Chromium browsers.",
   "type": "module",
   "bin": {
-    "bt": "cli/bt.js"
+    "bt": "dist/bt"
   },
   "files": [
-    "cli/",
-    "src/",
-    "scripts/",
+    "dist/bt",
     "extension/",
     "native-host.example.json",
     "README.md"
   ],
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
   "scripts": {
     "sync:version": "node ./scripts/sync-version.js",
-    "check": "bun run sync:version && tsc --noEmit",
+    "check": "tsc --noEmit",
     "build": "bun run sync:version && bun build ./src/main.ts --compile --outfile ./dist/bt",
     "pack:extension": "bun run sync:version && node ./scripts/pack-extension.js",
-    "prepack": "bun run check"
+    "prepack": "bun run check && bun run build"
   },
   "keywords": [
     "brotab",
@@ -33,11 +37,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "dependencies": {
-    "bun": "^1.3.14"
-  },
   "devDependencies": {
     "@types/bun": "latest",
+    "bun": "^1.3.14",
     "typescript": "latest"
   }
 }

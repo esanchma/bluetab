@@ -55,6 +55,7 @@ async function handleRequest(request) {
     case "activate": return await activate(request);
     case "close": return await closeTabs(request);
     case "open": return await openTabs(request);
+    case "bookmark": return await bookmark(request);
     default: return { id: request.id, ok: false, stderr: `unsupported command: ${request.command}\n`, code: 2 };
   }
 }
@@ -132,6 +133,42 @@ async function closeTabs(request) {
   if (!tabIds.length) throw new Error("close needs at least one tab id");
   await chrome.tabs.remove(tabIds);
   return { id: request.id, ok: true, code: 0 };
+}
+
+async function bookmark(request) {
+  const action = request.args[0];
+  if (action === "list") {
+    if (request.args.length > 1) throw new Error("usage: bt bookmark list");
+    const tree = await chrome.bookmarks.getTree();
+    return ok(request, formatBookmarks(flattenBookmarks(tree)));
+  }
+  if (action === "create") {
+    const url = request.args[1];
+    const title = request.args.slice(2).join(" ").trim();
+    if (!url || !title) throw new Error("usage: bt bookmark create <url> <title>");
+    const created = await chrome.bookmarks.create({ url, title });
+    const tree = await chrome.bookmarks.getTree();
+    const createdWithPath = flattenBookmarks(tree).find(bookmark => bookmark.id === created.id);
+    return ok(request, formatBookmarks(createdWithPath ? [createdWithPath] : [{ ...created, folderPath: "" }]));
+  }
+  throw new Error("usage: bt bookmark <create|list>");
+}
+
+function flattenBookmarks(nodes, folderPath = []) {
+  const bookmarks = [];
+  for (const node of nodes) {
+    if (node.url) {
+      bookmarks.push({ ...node, folderPath: folderPath.join("/") });
+    } else if (node.children) {
+      const childPath = node.title ? [...folderPath, node.title] : folderPath;
+      bookmarks.push(...flattenBookmarks(node.children, childPath));
+    }
+  }
+  return bookmarks;
+}
+
+function formatBookmarks(bookmarks) {
+  return bookmarks.map(bookmark => `${bookmark.id}\t${bookmark.title ?? ""}\t${bookmark.url ?? ""}\t${bookmark.folderPath ?? ""}`).join("\n") + (bookmarks.length ? "\n" : "");
 }
 
 async function openTabs(request) {

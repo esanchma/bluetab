@@ -8,7 +8,7 @@ Minimal MV3 reimplementation of the brotab subset used by this project. The CLI 
 npm install -g @esanchma/bluetab
 ```
 
-The npm package depends on `bun`, so users do not need a separate Bun installation for normal npm-based installs.
+The npm package ships a compiled Linux x64 executable, so users do not need Bun for normal npm-based installs.
 
 Then load the unpacked extension from the global package directory, for example:
 
@@ -39,6 +39,8 @@ bt install <extension-id>
 - `printf '%s\n' https://example.com | bt open a[.<windowId>|.0]`
 - `bt open https://example.com`
 - `bt open a.123 https://example.com`
+- `bt bookmark create <URL> <TITLE>`
+- `bt bookmark list`, formatted as `<bookmark-id>\t<title>\t<url>\t<folder-path>`
 
 Unsupported by design: `text`, `html`, `words`, `index`, `search`, and other brotab commands outside the MVP.
 
